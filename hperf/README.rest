@@ -1,0 +1,71 @@
+=============================
+ProTK High Performance C Demo
+=============================
+
+formantsl.c is a high-performance C program for processing Praat formant files.
+This program is designed as a focused tool for extracting features we found to
+be significant in the detection of filled pauses at a much higher performance
+level than the pure-python implementation of the main ProTK system, for use
+with much larger datasets. This tool takes less than one second to generate
+ARFF-format output (sans the structure definitions so that files can be built
+additively as files are run through.
+
+Building
+========
+This file depends on the GNU Science Library (GSL). This can be installed from
+packages on most Linux distributions, and from MacPorts on Macintosh OS X. Mac
+builds also require Xcode for C compiler support (available for free on the Mac
+App Store).
+
+You should also have the tools for building C programs installed (installing
+``gcc`` on most platforms should do the trick nicely).
+
+On Ubuntu::
+    
+    $ sudo apt-get install libgsl0 libgsl0-dev
+
+On Fedora/Scientific Linux/RHEL::
+    
+    $ sudo yum install gsl gsl-dev
+
+On OS X with MacPorts::
+    
+    $ sudo port install gsl
+
+Building on Linux should then work as::
+    
+    $ gcc formantsl.c -o formantsl
+
+On OS X, it's a little more involved::
+    
+    $ gcc formantsl.c -o formantsl -I/opt/local/include -L/opt/local/lib -lgsl
+
+Test Mode Binary
+----------------
+To compile a test mode (i.e., truth set to YES for all cases) binary, use GCC's
+``-D`` switch like so::
+    
+    $ gcc -DRUNTEST formantsl.c -o formantsl-test
+
+There is a script provided to compile both binaries, ``build.sh`` in this
+directory.
+
+Using
+=====
+
+Operation is pretty simple. You need a Praat-created Formant SL file (extension
+is .FormantSL), and a boundary file from ProTK's ``boundary.py`` file (format
+detailed below in *Boundary Files*. Then just run it as::
+
+    $ ./formantsl youraudio.FormantSL youraudio.boundary
+
+Boundary Files
+==============
+
+Boundary files are created using the ``boundary.py`` script, but that script
+generates those on the fly and runs this program on the fly. For anyone who's
+interested, the file format is::
+    
+    <double:start-time> <double:end-time> <double:duration> <[0,1]:preceding-silence> <[0,1]:following-silence> <[0,1]:labeled-fp>
+
+
